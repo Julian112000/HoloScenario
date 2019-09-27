@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 1b2d6fb5b3d5afb4a93921b46289e564
   - enabled: 1
-    path: Assets/Scenes/test.unity
+    path: Assets/Scenes/HoloSpawning.unity
     guid: 62b6ec8a28c71a94cb65703034a19159
   m_configObjects: {}
