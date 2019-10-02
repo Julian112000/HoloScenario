@@ -36,4 +36,8 @@ public class Data : MonoBehaviour
     {
         return altitude;
     }
+    public float GetRotation()
+    {
+        return rotation;
+    }
 }

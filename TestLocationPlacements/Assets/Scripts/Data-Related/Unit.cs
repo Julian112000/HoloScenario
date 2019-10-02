@@ -11,7 +11,8 @@ public class Unit : MonoBehaviour
         pos = SceneManager.Instance.GeoToWorldPositionXZ(new Vector2d(data.GetLatitude(), data.GetLongitude()));
 
         Vector3 dif = gps - pos;
-        Debug.Log(dif);
         transform.position = new Vector3(dif.x, data.GetAltitude(), dif.z);
+        transform.rotation = Quaternion.Euler(0, data.GetRotation(), 0);
     }
+    
 }
