@@ -64,9 +64,8 @@ public class SceneManager : MonoBehaviour
     void CreateScenarios()
     {
         //Enable-Disable Ui panels
-        //panels[0].SetActive(false);
-        //panels[1].SetActive(false);
-        //panels[2].SetActive(true);
+        panels[0].SetActive(false);
+        panels[1].SetActive(true);
         //Load all scenario ui panels from database
         DataGetter.Instance.LoadScenarios(gameObject, 100);
     }
