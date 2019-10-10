@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class EnterID : MonoBehaviour
 {
-
     [SerializeField]
     private Text currentID;
 
