@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Data : MonoBehaviour
 {
+    private int sceneid;
+    private int orderid;
     private double latitude;
     private double longitude;
     private float altitude;
@@ -11,15 +13,20 @@ public class Data : MonoBehaviour
 
     private int id;
 
-    public Data(int id, double lat, double lon, float alt, int rotation)
+    public Data(int sceneid, int orderid, int id, double lat, double lon, float alt, int rotation)
     {
+        this.sceneid = sceneid;
+        this.orderid = orderid;
         this.id = id;
         this.latitude = lat;
         this.longitude = lon;
         this.altitude = alt;
         this.rotation = rotation;
     }
-
+    public int GetOrderId()
+    {
+        return orderid;
+    }
     public int GetID()
     {
         return id;
@@ -39,5 +46,9 @@ public class Data : MonoBehaviour
     public float GetRotation()
     {
         return rotation;
+    }
+    public int GetSceneId()
+    {
+        return sceneid;
     }
 }

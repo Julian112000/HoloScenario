@@ -20,6 +20,7 @@ public class SceneManager : MonoBehaviour
     [SerializeField]
     private float scale;
     //gps from database transformed to a vector3
+    [SerializeField]
     private Vector3 maingps;
 
     //UI Panels to turn on and off when loaded ui
@@ -60,12 +61,13 @@ public class SceneManager : MonoBehaviour
             unit.SetPosition(data[i], maingps);
             unit.transform.SetParent(this.transform);
         }
+        //
+        EnablePanel(-1);
     }
     void CreateScenarios()
     {
         //Enable-Disable Ui panels
-        panels[0].SetActive(false);
-        panels[1].SetActive(true);
+        EnablePanel(2);
         //Load all scenario ui panels from database
         DataGetter.Instance.LoadScenarios(gameObject, 100);
     }
@@ -78,6 +80,7 @@ public class SceneManager : MonoBehaviour
             ScenarioPanel panel = Instantiate(scenarioPanel, scenarioTransform.transform).GetComponent<ScenarioPanel>();
             panel.Initialize(id, name, date);
             sceneids.Add(id);
+            EnablePanel(1);
         }
     }
     public void Load(int number, string name, string time, int amount)
@@ -91,11 +94,21 @@ public class SceneManager : MonoBehaviour
         currentid = number;
         currentname = name;
         currentdate = time;
+        //
+        EnablePanel(2);
     }
     public void SetGps(Vector2d gps)
     {
         maingps = GeoToWorldPositionXZ(gps);
         DataGetter.onhololoaded();
+    }
+    public void EnablePanel(int id)
+    {
+        foreach (GameObject panel in panels)
+            panel.SetActive(false);
+
+        if (id != -1)
+            panels[id].SetActive(true);
     }
     //Transform vector2d to worldposition
     public static Vector2d GeoToWorldPosition(double lat, double lon, Vector2d refPoint, float scale)
@@ -108,7 +121,7 @@ public class SceneManager : MonoBehaviour
     //Transform vector2d to vector3 in world position
     public Vector3 GeoToWorldPositionXZ(Vector2d latitudeLongitude)
     {
-        var worldPos = GeoToWorldPosition(latitudeLongitude.x, latitudeLongitude.y, new Vector2d(36340.9, 5825.7), scale);
+        var worldPos = GeoToWorldPosition(latitudeLongitude.x, latitudeLongitude.y, new Vector2d(0, 0), scale);
         Vector3 pos = new Vector3((float)worldPos.x, 0, (float)worldPos.y);
         return transform.TransformPoint(pos);
     }

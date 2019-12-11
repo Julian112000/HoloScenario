@@ -39,7 +39,13 @@ public class DataGetter : MonoBehaviour
         //Set instance to this script
         Instance = this;
     }
-
+    public void GetWaypoints(Data data, Unit unit)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            StartCoroutine(GetUnitWaypoints(data.GetSceneId(), data.GetOrderId(), i, unit));
+        }
+    }
     public void GetUnitData(int sceneid, int id)
     {
         //Coroutine to get data of the units from database
@@ -66,6 +72,12 @@ public class DataGetter : MonoBehaviour
         int id = int.Parse(hololensIdText.text);
         StartCoroutine(GetGpsLocation(id));
     }
+    public void Submit(int hololensId)
+    {
+        //Submit hololensid and get GPSlocation
+        int id = hololensId;
+        StartCoroutine(GetGpsLocation(id));
+    }
 
     IEnumerator GetSceneData(int sceneid)
     {
@@ -86,6 +98,16 @@ public class DataGetter : MonoBehaviour
             unitamounts = int.Parse(values[3]);
         }
     }
+    //string TestDict(Dictionary<string, string> data, string api)
+    //{
+    //    WWWForm form = new WWWForm();
+    //    foreach (KeyValuePair<string, string> entry in data)
+    //    {
+    //        form.AddField(entry.Key, entry.Value);
+    //    }
+    //    WWW www = new WWW(url + api, form);
+    //    yield return www.text;
+    //}
     IEnumerator LoadScenario(int sceneid)
     {
         //Add new connection form and add data
@@ -206,12 +228,39 @@ public class DataGetter : MonoBehaviour
             int rot = int.Parse(values[4]);
 
             //Create new data with all new recieved data
-            Data data = new Data(db_id, lat, lon, alt, rot);
+            Data data = new Data(sceneid, id, db_id, lat, lon, alt, rot);
             datas.Add(data);
+
             //If datacount recieved the max amount of units, call event
             if (datas.Count == unitamounts)
                 ondataloaded();
         }
 
+    }
+    IEnumerator GetUnitWaypoints(int sceneid, int unitid, int id, Unit data)
+    {
+        yield return new WaitForSeconds(1f);
+        WWWForm form = new WWWForm();
+        form.AddField("action", "waypoint");
+        form.AddField("sceneid", sceneid);
+        form.AddField("order", unitid);
+        form.AddField("waypointid", id);
+
+        WWW www = new WWW(url + "loadapi.php", form);
+        yield return www;
+        if (www.text != "error")
+        {
+            string datatext = www.text;
+            string[] values = datatext.Split(";"[0]);
+            #if !UNITY_EDITOR
+            values[0] = values[1].Replace(",", ".");
+            values[1] = values[2].Replace(",", ".");
+            #endif
+
+            double lat = double.Parse(values[0]);
+            double lon = double.Parse(values[1]);
+
+            data.SetWaypoint(id, new Vector2d(lat, lon));
+        }
     }
 }

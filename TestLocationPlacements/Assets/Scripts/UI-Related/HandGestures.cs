@@ -25,12 +25,4 @@ public class HandGestures : MonoBehaviour
         };
         recognizer.StartCapturingGestures();
     }
-    public void Handel(HoldStartedEventArgs args)
-    {
-
-    }
-    public void GeenHandel(HoldStartedEventArgs args)
-    {
-
-    }
 }
