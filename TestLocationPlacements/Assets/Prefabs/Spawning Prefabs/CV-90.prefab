@@ -376,6 +376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
+  turnDistance: 4
+  rotationSpeed: 0.5
   turretbase: {fileID: 2557617624406250067}
 --- !u!1 &6602279854064578581
 GameObject:

@@ -9,6 +9,9 @@ public class DataGetter : MonoBehaviour
     //Static Singleton of DataGetter
     public static DataGetter Instance;
 
+    [SerializeField]
+    private Text errorConnectionText;
+
     #region Events
     //Event when unit data are loaded
     public delegate void OnDataLoaded();
@@ -39,6 +42,14 @@ public class DataGetter : MonoBehaviour
         //Set instance to this script
         Instance = this;
     }
+    private bool CheckConnection()
+    {
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            return false;
+        }
+        return true;
+    }
     public void GetWaypoints(Data data, Unit unit)
     {
         for (int i = 0; i < 100; i++)
@@ -68,12 +79,29 @@ public class DataGetter : MonoBehaviour
     }
     public void Submit(Text hololensIdText)
     {
+        if (!CheckConnection())
+        {
+            errorConnectionText.text = "Error. Check internet connection!";
+            errorConnectionText.color = Color.red;
+            Debug.Log("Error. Check internet connection!");
+            return;
+        }
+        else errorConnectionText.gameObject.SetActive(false);
+
         //Submit hololensid and get GPSlocation
         int id = int.Parse(hololensIdText.text);
         StartCoroutine(GetGpsLocation(id));
     }
     public void Submit(int hololensId)
     {
+        if (!CheckConnection())
+        {
+            errorConnectionText.gameObject.SetActive(true);
+            Debug.Log("Error. Check internet connection!");
+            return;
+        }
+        else errorConnectionText.gameObject.SetActive(false);
+
         //Submit hololensid and get GPSlocation
         int id = hololensId;
         StartCoroutine(GetGpsLocation(id));
@@ -98,16 +126,6 @@ public class DataGetter : MonoBehaviour
             unitamounts = int.Parse(values[3]);
         }
     }
-    //string TestDict(Dictionary<string, string> data, string api)
-    //{
-    //    WWWForm form = new WWWForm();
-    //    foreach (KeyValuePair<string, string> entry in data)
-    //    {
-    //        form.AddField(entry.Key, entry.Value);
-    //    }
-    //    WWW www = new WWW(url + api, form);
-    //    yield return www.text;
-    //}
     IEnumerator LoadScenario(int sceneid)
     {
         //Add new connection form and add data
@@ -222,10 +240,10 @@ public class DataGetter : MonoBehaviour
             #endif
 
             int db_id = int.Parse(values[0]);
-            double lat = double.Parse(values[1]);
-            double lon = double.Parse(values[2]);
-            float alt = float.Parse(values[3]);
-            int rot = int.Parse(values[4]);
+            double lat = double.Parse(values[2]);
+            double lon = double.Parse(values[3]);
+            float alt = float.Parse(values[4]);
+            int rot = int.Parse(values[5]);
 
             //Create new data with all new recieved data
             Data data = new Data(sceneid, id, db_id, lat, lon, alt, rot);

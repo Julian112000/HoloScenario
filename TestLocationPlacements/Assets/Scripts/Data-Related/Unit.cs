@@ -18,6 +18,8 @@ public class Unit : MonoBehaviour
 
     [SerializeField]
     private int turnDistance;
+    [SerializeField]
+    private float rotationSpeed;
 
     private void Update()
     {
@@ -25,18 +27,21 @@ public class Unit : MonoBehaviour
         {
             Move();
             transform.position += transform.forward * speed * Time.deltaTime;
-            Vector3 lTargetDir = waypointspos[currentWaypoint] - transform.position;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.time * speed);
+            Quaternion targetRotation = Quaternion.LookRotation(waypointspos[currentWaypoint] - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            Rotate(waypointspos[currentWaypoint]);
 
-            if (transform.position == waypointspos[currentWaypoint])
+            if (Vector3.Distance(transform.position, waypointspos[currentWaypoint]) < turnDistance)
+            {
                 currentWaypoint++;
+            }
         }
     }
     public virtual void Move()
     {
         //
     }
-    public virtual void Rotate()
+    public virtual void Rotate(Vector3 pos)
     {
         //
     }

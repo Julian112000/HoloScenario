@@ -20,8 +20,10 @@ public class Fennek : Unit
         gun.rotation = Quaternion.Euler(0.0f, Mathf.PingPong(Time.time * 40, 180) + transform.rotation.eulerAngles.y, 0.0f);
         base.Move();
     }
-    public override void Rotate()
+    public override void Rotate(Vector3 pos)
     {
-        base.Rotate();
+        wheels[2].parent.transform.right = -(pos - transform.position);
+        wheels[3].parent.transform.right = -(pos - transform.position);
+        base.Rotate(pos);
     }
 }
