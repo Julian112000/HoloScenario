@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class Data : MonoBehaviour
 {
-    private int sceneid;
-    private int orderid;
-    private double latitude;
-    private double longitude;
-    private float altitude;
-    private int rotation;
+    private int sceneid;            //id of the scene the data belongs
+    private int orderid;            //order id of the data
+    private double latitude;        //latitude (x) 
+    private double longitude;       //longitude (z)
+    private float altitude;         //altitude (y)
+    private int rotation;           //orientation of the data
 
-    private int id;
+    private int id;                 //main id of the data
 
+    //constructor data
     public Data(int sceneid, int orderid, int id, double lat, double lon, float alt, int rotation)
     {
+        //set all data and local
         this.sceneid = sceneid;
         this.orderid = orderid;
         this.id = id;
@@ -23,6 +25,7 @@ public class Data : MonoBehaviour
         this.altitude = alt;
         this.rotation = rotation;
     }
+    #region Getters
     public int GetOrderId()
     {
         return orderid;
@@ -51,4 +54,5 @@ public class Data : MonoBehaviour
     {
         return sceneid;
     }
+    #endregion
 }

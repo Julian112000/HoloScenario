@@ -7,30 +7,42 @@ public class Unit : MonoBehaviour
     //main position of unit
     private Vector3 pos;
 
+    //main speed with limit
     [SerializeField]
     [Range(0, 5)]
     protected float speed;
 
+    //waypoint positions with int being the id and vector3 being the position
     protected Dictionary<int, Vector3> waypointspos = new Dictionary<int, Vector3>();
 
+    //main gps of the unit
     private Vector3 gps;
+    //current waypoint the unit is in
     protected int currentWaypoint = 0;
 
+    //min. distance to go to the next waypoint
     [SerializeField]
     private int turnDistance;
+    //speed the unit rotates to the new waypoint
     [SerializeField]
     private float rotationSpeed;
 
     private void Update()
     {
+        //when waypoints are not empty and currentwaypoint is not the last in the dictionary
         if (waypointspos.Count != 0 && currentWaypoint < waypointspos.Count)
         {
+            //set the move void
             Move();
+
+            //move forward with own orientation
             transform.position += transform.forward * speed * Time.deltaTime;
+            //set target rotation of the new waypoint
             Quaternion targetRotation = Quaternion.LookRotation(waypointspos[currentWaypoint] - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             Rotate(waypointspos[currentWaypoint]);
 
+            //when distance is smaller than the turndistance skip to the next waypoint
             if (Vector3.Distance(transform.position, waypointspos[currentWaypoint]) < turnDistance)
             {
                 currentWaypoint++;
@@ -62,6 +74,7 @@ public class Unit : MonoBehaviour
     }
     public void SetWaypoint(int index, Vector2d waypoint)
     {
+        //add a new waypoint to the world position and name/position it
         waypointspos.Add(index, (gps - SceneManager.Instance.GeoToWorldPositionXZ(waypoint)));
         GameObject way = new GameObject();
         way.transform.position = gps - SceneManager.Instance.GeoToWorldPositionXZ(waypoint);

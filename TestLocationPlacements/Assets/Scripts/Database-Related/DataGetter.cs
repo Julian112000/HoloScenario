@@ -42,16 +42,21 @@ public class DataGetter : MonoBehaviour
         //Set instance to this script
         Instance = this;
     }
+    //bool to check connection
     private bool CheckConnection()
     {
+        //when application internetreachabilit is not reacable
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
+            //return false
             return false;
         }
         return true;
     }
+    //get waypoints void 
     public void GetWaypoints(Data data, Unit unit)
     {
+        //loop trough to find waypoints [100 = limit of calls]
         for (int i = 0; i < 100; i++)
         {
             StartCoroutine(GetUnitWaypoints(data.GetSceneId(), data.GetOrderId(), i, unit));
@@ -77,10 +82,13 @@ public class DataGetter : MonoBehaviour
             StartCoroutine(LoadScenarios(i));
         }
     }
+    //Submit with text component
     public void Submit(Text hololensIdText)
     {
+        //when there is no connection
         if (!CheckConnection())
         {
+            //set text and color and feedback
             errorConnectionText.text = "Error. Check internet connection!";
             errorConnectionText.color = Color.red;
             Debug.Log("Error. Check internet connection!");
@@ -92,8 +100,10 @@ public class DataGetter : MonoBehaviour
         int id = int.Parse(hololensIdText.text);
         StartCoroutine(GetGpsLocation(id));
     }
+    //submit with hololensId int attached
     public void Submit(int hololensId)
     {
+        //when there is no connection
         if (!CheckConnection())
         {
             errorConnectionText.gameObject.SetActive(true);
@@ -239,7 +249,7 @@ public class DataGetter : MonoBehaviour
             values[3] = values[3].Replace(",", ".");
             #endif
 
-            int db_id = int.Parse(values[0]);
+            int db_id = int.Parse(values[0]);      
             double lat = double.Parse(values[2]);
             double lon = double.Parse(values[3]);
             float alt = float.Parse(values[4]);
@@ -258,16 +268,20 @@ public class DataGetter : MonoBehaviour
     IEnumerator GetUnitWaypoints(int sceneid, int unitid, int id, Unit data)
     {
         yield return new WaitForSeconds(1f);
+        //Add new connection form and add data
         WWWForm form = new WWWForm();
         form.AddField("action", "waypoint");
         form.AddField("sceneid", sceneid);
         form.AddField("order", unitid);
         form.AddField("waypointid", id);
-
+        //Connect of database with right php
         WWW www = new WWW(url + "loadapi.php", form);
+        //Return all php echo's
         yield return www;
+        //Check for errors
         if (www.text != "error")
         {
+            //Get data
             string datatext = www.text;
             string[] values = datatext.Split(";"[0]);
             #if !UNITY_EDITOR
@@ -278,6 +292,7 @@ public class DataGetter : MonoBehaviour
             double lat = double.Parse(values[0]);
             double lon = double.Parse(values[1]);
 
+            //set waypoints with lat and lon
             data.SetWaypoint(id, new Vector2d(lat, lon));
         }
     }

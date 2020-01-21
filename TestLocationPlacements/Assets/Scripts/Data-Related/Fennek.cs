@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Fennek : Unit
 {
+    //wheel transforms of fennek
     [SerializeField]
     private Transform[] wheels;
+    //gun rotation part of the fennek
     [SerializeField]
     private Transform gun;
 
@@ -22,6 +24,7 @@ public class Fennek : Unit
     }
     public override void Rotate(Vector3 pos)
     {
+        //rotate wheels
         wheels[2].parent.transform.right = -(pos - transform.position);
         wheels[3].parent.transform.right = -(pos - transform.position);
         base.Rotate(pos);
